@@ -1,11 +1,11 @@
 [package]
-name = "abbr"
-version = "0.1.1"
-entrypoint = "abbr.typ"
+name = "journal"
+version = "0.1.0"
+entrypoint = "journal.typ"
 authors = ["Jonathan Halmen <slowjo@halmen.xyz>"]
 license = "MIT"
 description = "An Abbreviations package."
-repository = "https://git.sr.ht/~slowjo/typst-abbr"
+repository = "https://github.com/abhinandh-s/journal.git"
 keywords = ["abbreviation", "acronym"]
 categories = ["model"]
 exclude = ["example.*"]
