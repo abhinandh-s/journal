@@ -1,6 +1,6 @@
 [package]
 name = "journal"
-version = "0.1.0"
+version = "1.0.0"
 entrypoint = "journal.typ"
 authors = ["Jonathan Halmen <slowjo@halmen.xyz>"]
 license = "MIT"
