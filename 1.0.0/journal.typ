@@ -11,7 +11,7 @@
 
 #let get(short) = {
 	let key = stringify(short)
-	let entry = state("abbr", (:)).get().at(key, default:none)
+	let entry = state("journal", (:)).get().at(key, default:none)
 	return (key, entry)
 }
 
@@ -26,14 +26,14 @@
 
 #let incr(dct) = {
 	dct.c+=1
-  state("abbr").update(it=>{
+  state("journal").update(it=>{
     it.insert(dct.s, dct)
     return it
   })
 }
 #let mark-used(dct) = {
 	dct.list = true
-  state("abbr").update(it=>{
+  state("journal").update(it=>{
     it.insert(dct.s, dct)
     return it
   })
@@ -45,7 +45,7 @@
 	let plural = entry.at(1, default:none)
 	let (key, entry) = get(short)
 	if entry == none { // do not update blindly, it'd reset the counter
-		state("abbr").update(it => {
+		state("journal").update(it => {
 			let item = (
 				s: short,
 				l: long,
@@ -60,14 +60,14 @@
 	}
 }
 /// add list of entries
-#let make(..lst) = for (..abbr) in lst.pos() { add(..abbr) }
+#let make(..lst) = for (..journal) in lst.pos() { add(..journal) }
 
-/// short form of abbreviation with link
+/// short form of journaleviation with link
 #let s(short) = context {
   let dct = get(short).at(1)
   if dct == none { return warn(short) }
 	mark-used(dct)
-	let styleit = state("abbr-style", style-default).get()
+	let styleit = state("journal-style", style-default).get()
   if query(dct.lbl).len() != 0 {
 	  link(dct.lbl, styleit(dct.s))
   } else {
@@ -75,7 +75,7 @@
   }
 }
 
-/// long form of abbreviation
+/// long form of journaleviation
 #let l(short) = context {
   let dct = get(short).at(1)
   if dct == none { return warn(short) }
@@ -96,7 +96,7 @@
 }
 /// short form plural
 #let pls(short) = context {
-	let styleit = state("abbr-style", style-default).get()
+	let styleit = state("journal-style", style-default).get()
 	[#s(short)#styleit[s]]
 }
 /// long form plural
@@ -122,15 +122,15 @@
   if dct.c == 0 { pll(key) }
   else { pls(key) }
 }
-/// create list of abbreviations
+/// create list of journaleviations
 #let list(
   title: [List of Abbreviations],
 	columns: 2,
 ) = context {
-  let lst = state("abbr", (:)).final().values()
+  let lst = state("journal", (:)).final().values()
 			.filter(it => it.list).sorted(key: it => it.s)
   if lst.len() == 0 { return }
-  let styleit = state("abbr-style", style-default).get()
+  let styleit = state("journal-style", style-default).get()
 	let make-entry(it) = (styleit[#it.s #it.lbl], it.l)
 	if columns == 2 {
 		let n = int(lst.len()/2)
@@ -138,7 +138,7 @@
 		lst = lst.slice(0, n).zip(lst.slice(n)).flatten()
 		if last != none { lst.push(last) }
 	} else if columns != 1 {
-		panic("abbr.list only supports 1 or 2 columns")
+		panic("journal.list only supports 1 or 2 columns")
 	}
   heading(numbering: none, title)
 	table(
@@ -147,9 +147,9 @@
 		..for entry in lst { make-entry(entry) }
 	)
 }
-/// configure styling of abbreviations
+/// configure styling of journaleviations
 #let style(func) = {
-	state("abbr-style", style-default).update(it => {
+	state("journal-style", style-default).update(it => {
 		if func == auto {
 			return style-default
 		}
